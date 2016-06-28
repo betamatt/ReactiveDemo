@@ -16,7 +16,6 @@
 		C906C6F51D1CB57F0053296A /* ReactiveDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C6F41D1CB57F0053296A /* ReactiveDemoTests.swift */; };
 		C906C7001D1CB57F0053296A /* ReactiveDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C6FF1D1CB57F0053296A /* ReactiveDemoUITests.swift */; };
 		C906C70E1D1CDD4F0053296A /* Signal+Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C70D1D1CDD4F0053296A /* Signal+Debounce.swift */; };
-		C92B174D1D21E76A00609FFB /* debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C92B174C1D21E76A00609FFB /* debug.xcconfig */; };
 		C99528A01D207AC2004A8BE7 /* AsyncData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C995289F1D207AC2004A8BE7 /* AsyncData.swift */; };
 		C99528A41D208553004A8BE7 /* FoursquareService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99528A31D208553004A8BE7 /* FoursquareService.swift */; };
 /* End PBXBuildFile section */
@@ -56,7 +55,6 @@
 		C906C6FF1D1CB57F0053296A /* ReactiveDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveDemoUITests.swift; sourceTree = "<group>"; };
 		C906C7011D1CB57F0053296A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C906C70D1D1CDD4F0053296A /* Signal+Debounce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Signal+Debounce.swift"; sourceTree = "<group>"; };
-		C92B174C1D21E76A00609FFB /* debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
 		C995289F1D207AC2004A8BE7 /* AsyncData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncData.swift; sourceTree = "<group>"; };
 		C99528A31D208553004A8BE7 /* FoursquareService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoursquareService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -107,7 +105,6 @@
 		C906C6D31D1CB57E0053296A = {
 			isa = PBXGroup;
 			children = (
-				C92B174C1D21E76A00609FFB /* debug.xcconfig */,
 				C906C6DE1D1CB57F0053296A /* ReactiveDemo */,
 				C906C6F31D1CB57F0053296A /* ReactiveDemoTests */,
 				C906C6FE1D1CB57F0053296A /* ReactiveDemoUITests */,
@@ -268,7 +265,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C92B174D1D21E76A00609FFB /* debug.xcconfig in Resources */,
 				C906C6EA1D1CB57F0053296A /* LaunchScreen.storyboard in Resources */,
 				C906C6E71D1CB57F0053296A /* Assets.xcassets in Resources */,
 				C906C6E51D1CB57F0053296A /* Main.storyboard in Resources */,
