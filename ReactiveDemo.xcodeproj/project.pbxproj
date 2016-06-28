@@ -488,7 +488,7 @@
 		};
 		C906C7051D1CB57F0053296A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C92B174C1D21E76A00609FFB /* debug.xcconfig */;
+			baseConfigurationReference = 3EB5CA606BE0E5148C4DE8B0 /* Pods-ReactiveDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ReactiveDemo/Info.plist;
