@@ -30,6 +30,10 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>FOURSQUARE_API_KEY</key>
+	<string>$(FOURSQUARE_API_KEY)</string>
+	<key>FOURSQUARE_API_SECRET</key>
+	<string>$(FOURSQUARE_API_SECRET)</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
