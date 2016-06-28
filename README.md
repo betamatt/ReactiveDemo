@@ -1,5 +1,7 @@
 # iOS Reactive Demo
 
+An attempt to develop an Elm style app with reactive Swift.
+
 ### Configuration
 
 Create `debug.xcconfig` in the project root.
