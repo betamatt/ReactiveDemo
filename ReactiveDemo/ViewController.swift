@@ -10,12 +10,15 @@ import UIKit
 import ReactiveCocoa
 import enum Result.NoError
 
+enum ViewControllerState<Error> {
+  case NotLoaded
+  case Loading(searchTerm: String)
+  case Success(searchTerm: String, results: [String])
+  case Failure(searchTerm: String, Error)
+}
+
 class ViewModel {
-  var searchTerm = MutableProperty<String?>(nil)
-  var searchResults = MutableProperty<AsyncData<[String], NSError>>(.NotLoaded)
-  
-  init() {
-  }
+  var state = MutableProperty<ViewControllerState<NSError>>(.NotLoaded)
 }
 
 class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
@@ -23,7 +26,7 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   @IBOutlet weak var tableView: UITableView!
 
   var searchController: UISearchController!
-  var viewModel: ViewModel = ViewModel()
+  var viewModel = ViewModel()
   var delegate: AppDelegate!
   
   override func viewDidLoad() {
@@ -41,30 +44,35 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
     searchController.searchBar.sizeToFit()
     
     tableView.dataSource = self
-
-    viewModel.searchTerm.signal
+    
+    viewModel.state.signal
       .debounce(NSTimeInterval(0.3), onScheduler: QueueScheduler.mainQueueScheduler)
-      .filter({ s in !(s?.isEmpty)! })
-      .observeNext({ string in
-        if let s = string {
-          NSLog(s)
-          let results = self.viewModel.searchResults
-          results.swap(AsyncData.Loading)
-          
-          self.delegate.foursquareService.venues(35.702069, long: 139.775326, query: s) { result in
+      .filter {
+        switch $0 {
+        case .Loading (let term): return !term.isEmpty
+        default: return false
+        }
+      }
+      .observeNext {
+        switch $0 {
+        case .Loading (let term):
+          self.delegate.foursquareService.venues(35.702069, long: 139.775326, query: term) { result in
             switch result {
             case let .Success(data):
               let venues = data["response"]["venues"].arrayValue
               let names = venues.map { venue in venue["name"].stringValue }
-              results.swap(AsyncData.Success(names))
+              self.viewModel.state.swap(ViewControllerState.Success(searchTerm: term, results: names))
+            case let .Failure(error):
+              self.viewModel.state.swap(ViewControllerState.Failure(searchTerm: term, error))
             default:
               break
             }
           }
+        default: break
         }
-      })
+      }
     
-    viewModel.searchResults.signal.observeNext({ _ in self.tableView.reloadData() })
+    viewModel.state.signal.observeNext { _ in self.tableView.reloadData() }
   }
 
   override func didReceiveMemoryWarning() {
@@ -73,7 +81,9 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   }
 
   func updateSearchResultsForSearchController(searchController: UISearchController) {
-    viewModel.searchTerm.swap(searchController.searchBar.text)
+    if let text = searchController.searchBar.text {
+      viewModel.state.swap(ViewControllerState.Loading(searchTerm: text))
+    }
   }
 
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -81,8 +91,8 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    switch (viewModel.searchResults.value) {
-    case .Success(let data):
+    switch viewModel.state.value {
+    case let .Success(_, data):
       return data.count
     default:
       return 0
@@ -90,11 +100,11 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
+    let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
     
-    switch (viewModel.searchResults.value) {
-    case let .Success(value):
-      cell.textLabel?.text = value[indexPath.row]
+    switch viewModel.state.value {
+    case let .Success(_, results):
+      cell.textLabel?.text = results[indexPath.row]
     default:
       false
     }
