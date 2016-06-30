@@ -108,6 +108,8 @@ class VenuesFromQueryAndLocation: ViewControllerDelegate {
           break
         }
       }
+    case let .Loading(term) where term.characters.count == 0:
+      view.input = ViewModel(state: .NotLoaded)
     default:
       break
     }
