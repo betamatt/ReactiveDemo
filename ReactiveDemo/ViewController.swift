@@ -10,12 +10,19 @@ import UIKit
 import ReactiveCocoa
 import enum Result.NoError
 
-class ViewModel {
-  var searchTerm = MutableProperty<String?>(nil)
-  var searchResults = MutableProperty<AsyncData<[String], NSError>>(.NotLoaded)
-  
-  init() {
-  }
+enum ViewControllerState<Error> {
+  case NotLoaded
+  case Loading(searchTerm: String)
+  case Success(searchTerm: String, results: [String])
+  case Failure(searchTerm: String, Error)
+}
+
+struct ViewModel {
+  var state = ViewControllerState<NSError>.NotLoaded
+}
+
+protocol ViewControllerDelegate {
+  func viewController(viewController: ViewController, didSuggest model: ViewModel)
 }
 
 class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpdating, UITableViewDelegate, UITableViewDataSource {
@@ -23,57 +30,29 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   @IBOutlet weak var tableView: UITableView!
 
   var searchController: UISearchController!
-  var viewModel: ViewModel = ViewModel()
-  var delegate: AppDelegate!
+  var input = ViewModel() {
+    didSet {
+      tableView.reloadData()
+    }
+  }
+  var output = VenuesFromQueryAndLocation() // Type should be `ViewControllerDelegate` and assignment made externally
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    delegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     searchController = UISearchController(searchResultsController: nil)
     searchController.searchResultsUpdater = self
     searchController.searchBar.delegate = self
     tableView.tableHeaderView = searchController.searchBar
-    
     definesPresentationContext = true
-
     searchController.searchBar.sizeToFit()
-    
     tableView.dataSource = self
-
-    viewModel.searchTerm.signal
-      .debounce(NSTimeInterval(0.3), onScheduler: QueueScheduler.mainQueueScheduler)
-      .filter({ s in !(s?.isEmpty)! })
-      .observeNext({ string in
-        if let s = string {
-          NSLog(s)
-          let results = self.viewModel.searchResults
-          results.swap(AsyncData.Loading)
-          
-          self.delegate.foursquareService.venues(35.702069, long: 139.775326, query: s) { result in
-            switch result {
-            case let .Success(data):
-              let venues = data["response"]["venues"].arrayValue
-              let names = venues.map { venue in venue["name"].stringValue }
-              results.swap(AsyncData.Success(names))
-            default:
-              break
-            }
-          }
-        }
-      })
-    
-    viewModel.searchResults.signal.observeNext({ _ in self.tableView.reloadData() })
-  }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
   }
 
   func updateSearchResultsForSearchController(searchController: UISearchController) {
-    viewModel.searchTerm.swap(searchController.searchBar.text)
+    if let text = searchController.searchBar.text {
+      output.viewController(self, didSuggest: ViewModel(state: .Loading(searchTerm: text)))
+    }
   }
 
   func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -81,8 +60,8 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   }
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    switch (viewModel.searchResults.value) {
-    case .Success(let data):
+    switch input.state {
+    case let .Success(_, data):
       return data.count
     default:
       return 0
@@ -90,16 +69,50 @@ class ViewController: UIViewController, UISearchBarDelegate, UISearchResultsUpda
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
+    let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
     
-    switch (viewModel.searchResults.value) {
-    case let .Success(value):
-      cell.textLabel?.text = value[indexPath.row]
+    switch input.state {
+    case let .Success(_, results):
+      cell.textLabel?.text = results[indexPath.row]
     default:
       false
     }
   
     return cell
+  }
+  
+}
+
+class VenuesFromQueryAndLocation: ViewControllerDelegate {
+  
+  var foursquareService: FoursquareService! {
+    let info = NSBundle.mainBundle().infoDictionary!
+    return FoursquareService(
+      clientId: info["FOURSQUARE_API_KEY"] as! String,
+      clientSecret: info["FOURSQUARE_API_SECRET"] as! String
+    )
+  }
+  
+  func viewController(view: ViewController, didSuggest suggested: ViewModel) {
+    switch suggested.state {
+    case let .Loading(term) where term.characters.count > 0:
+      view.input = ViewModel(state: .Loading(searchTerm: term))
+      foursquareService.venues(35.702069, long: 139.775326, query: term) {
+        switch $0 {
+        case let .Success(data):
+          let names = data["response"]["venues"].arrayValue.map { $0["name"].stringValue }
+          view.input = ViewModel(state: .Success(searchTerm: term, results: names))
+        case let .Failure(error):
+          view.input = ViewModel(state: .Failure(searchTerm: term, error))
+        default:
+          break
+        }
+      }
+    case let .Loading(term) where term.characters.count == 0:
+      view.input = ViewModel(state: .NotLoaded)
+    default:
+      break
+    }
   }
   
 }
