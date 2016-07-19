@@ -16,9 +16,10 @@
 		C906C6F51D1CB57F0053296A /* ReactiveDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C6F41D1CB57F0053296A /* ReactiveDemoTests.swift */; };
 		C906C7001D1CB57F0053296A /* ReactiveDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C6FF1D1CB57F0053296A /* ReactiveDemoUITests.swift */; };
 		C906C70E1D1CDD4F0053296A /* Signal+Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C906C70D1D1CDD4F0053296A /* Signal+Debounce.swift */; };
-		C92B174D1D21E76A00609FFB /* debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C92B174C1D21E76A00609FFB /* debug.xcconfig */; };
+		C92B174F1D235D7000609FFB /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92B174E1D235D7000609FFB /* LocationService.swift */; };
 		C99528A01D207AC2004A8BE7 /* AsyncData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C995289F1D207AC2004A8BE7 /* AsyncData.swift */; };
 		C99528A41D208553004A8BE7 /* FoursquareService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C99528A31D208553004A8BE7 /* FoursquareService.swift */; };
+		C9C9C9931D274C020080C4F6 /* SignalProducer+Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9C9C9921D274C020080C4F6 /* SignalProducer+Debounce.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,8 +58,10 @@
 		C906C7011D1CB57F0053296A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C906C70D1D1CDD4F0053296A /* Signal+Debounce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Signal+Debounce.swift"; sourceTree = "<group>"; };
 		C92B174C1D21E76A00609FFB /* debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
+		C92B174E1D235D7000609FFB /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		C995289F1D207AC2004A8BE7 /* AsyncData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncData.swift; sourceTree = "<group>"; };
 		C99528A31D208553004A8BE7 /* FoursquareService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoursquareService.swift; sourceTree = "<group>"; };
+		C9C9C9921D274C020080C4F6 /* SignalProducer+Debounce.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SignalProducer+Debounce.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,8 @@
 				C906C6EB1D1CB57F0053296A /* Info.plist */,
 				C995289F1D207AC2004A8BE7 /* AsyncData.swift */,
 				C99528A31D208553004A8BE7 /* FoursquareService.swift */,
+				C92B174E1D235D7000609FFB /* LocationService.swift */,
+				C9C9C9921D274C020080C4F6 /* SignalProducer+Debounce.swift */,
 			);
 			path = ReactiveDemo;
 			sourceTree = "<group>";
@@ -268,7 +273,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C92B174D1D21E76A00609FFB /* debug.xcconfig in Resources */,
 				C906C6EA1D1CB57F0053296A /* LaunchScreen.storyboard in Resources */,
 				C906C6E71D1CB57F0053296A /* Assets.xcassets in Resources */,
 				C906C6E51D1CB57F0053296A /* Main.storyboard in Resources */,
@@ -348,6 +352,8 @@
 				C906C6E01D1CB57F0053296A /* AppDelegate.swift in Sources */,
 				C99528A41D208553004A8BE7 /* FoursquareService.swift in Sources */,
 				C99528A01D207AC2004A8BE7 /* AsyncData.swift in Sources */,
+				C92B174F1D235D7000609FFB /* LocationService.swift in Sources */,
+				C9C9C9931D274C020080C4F6 /* SignalProducer+Debounce.swift in Sources */,
 				C906C70E1D1CDD4F0053296A /* Signal+Debounce.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,11 +446,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -479,9 +486,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 2.3;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -495,6 +503,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roguecomma.ReactiveDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -507,6 +516,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.roguecomma.ReactiveDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};

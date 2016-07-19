@@ -9,6 +9,7 @@
 import Foundation
 import FoursquareAPIClient
 import SwiftyJSON
+import Result
 
 class FoursquareService {
   
@@ -18,7 +19,7 @@ class FoursquareService {
     client = FoursquareAPIClient(clientId: clientId, clientSecret: clientSecret)
   }
   
-  func venues(lat: Double, long: Double, query: String?, limit: Int = 10, completion: (AsyncData<JSON, NSError>) -> ()) {
+  func venues(lat: Double, long: Double, query: String?, limit: Int = 10, completion: (Result<JSON, NSError>) -> ()) {
     var params = [
       "ll": "\(lat),\(long)",
       "limit": "\(limit)"
@@ -29,9 +30,9 @@ class FoursquareService {
     
     client.requestWithPath("venues/search", parameter: params) { (data, error) in
       if let e = error {
-        completion(AsyncData.Failure(e))
+        completion(.Failure(e))
       } else if let d = data {
-        completion(AsyncData.Success(JSON(data: d)))
+        completion(.Success(JSON(data: d)))
       }
     }
   }

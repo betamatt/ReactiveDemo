@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import CoreLocation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
   var foursquareService: FoursquareService!
+  let locationService = LocationService()
   
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     let info = NSBundle.mainBundle().infoDictionary!

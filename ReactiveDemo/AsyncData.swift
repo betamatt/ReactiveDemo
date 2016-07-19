@@ -6,9 +6,11 @@
 //  Copyright © 2016 RogueComma. All rights reserved.
 //
 
-enum AsyncData<Value, Error> {
+import ReactiveCocoa
+
+enum AsyncData<Value> {
   case NotLoaded
   case Loading
   case Success(Value)
-  case Failure(Error)
+  case Failure
 }
